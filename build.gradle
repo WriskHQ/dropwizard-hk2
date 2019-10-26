@@ -1,0 +1,111 @@
+plugins {
+    id 'java'
+    id 'maven'
+    id 'signing'
+    id 'net.researchgate.release' version '2.8.1'
+    id 'com.github.ben-manes.versions' version '0.27.0'
+}
+
+ext {
+    junitVersion = '4.12'
+    dropwizardVersion = '2.0.0-rc12'
+}
+
+group = 'co.wrisk.dropwizard'
+
+repositories {
+    mavenCentral()
+
+    maven {
+        url "https://oss.sonatype.org/content/repositories/snapshots"
+    }
+}
+
+compileJava {
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+    options.deprecation = true
+}
+
+compileTestJava {
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+    options.deprecation = true
+}
+
+dependencies {
+    implementation "io.dropwizard:dropwizard-core:${dropwizardVersion}"
+
+    testImplementation "junit:junit:${junitVersion}"
+    testImplementation "io.dropwizard:dropwizard-testing:${dropwizardVersion}"
+    testImplementation "io.dropwizard:dropwizard-client:${dropwizardVersion}"
+}
+
+task sourcesJar(type: Jar, dependsOn: classes) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+task javadocJar(type: Jar) {
+    classifier = 'javadoc'
+    from javadoc
+}
+artifacts {
+    archives javadocJar, sourcesJar
+}
+
+signing {
+    required { !version.contains("SNAPSHOT") }
+    sign configurations.archives
+}
+
+afterReleaseBuild.dependsOn uploadArchives
+
+uploadArchives {
+
+    repositories {
+        mavenDeployer {
+            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+
+            repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+                authentication(userName: ossrhUsername, password: ossrhPassword)
+            }
+
+            snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
+                authentication(userName: ossrhUsername, password: ossrhPassword)
+            }
+
+            pom.project {
+                name 'HK2 Integration for Dropwizard'
+                packaging 'jar'
+                // optionally artifactId can be defined here
+                description 'Adds support for Health Checks, LifeCycles, Metrics, and Tasks to be injected by HK2'
+                url 'https://github.com/WriskHQ/dropwizard-hk2'
+
+                scm {
+                    connection 'scm:git:git@github.com:WriskHQ/dropwizard-hk2.git'
+                    developerConnection 'scm:git:git@github.com:WriskHQ/dropwizard-hk2.git'
+                    url 'https://github.com/WriskHQ/dropwizard-hk2'
+                }
+
+                licenses {
+                    license {
+                        name 'MIT License'
+                        url 'https://raw.githubusercontent.com/WriskHQ/dropwizard-hk2/master/LICENSE'
+                    }
+                }
+
+                developers {
+                    developer {
+                        name 'Bryan Harclerode'
+                        email 'baharclerode@dragon.zone'
+                    }
+
+                    developer {
+                        name 'Alex Harin'
+                        email 'alex@wrisk.co'
+                    }
+                }
+            }
+        }
+    }
+}
