@@ -1,10 +1,11 @@
 package zone.dragon.dropwizard;
 
-import com.google.common.collect.ImmutableMultimap;
 import zone.dragon.dropwizard.task.InjectableTask;
 
 import javax.inject.Inject;
 import java.io.PrintWriter;
+import java.util.List;
+import java.util.Map;
 
 public class TestInjectableTask extends InjectableTask {
     private TestConfig config;
@@ -16,8 +17,8 @@ public class TestInjectableTask extends InjectableTask {
     }
 
     @Override
-    public void execute(ImmutableMultimap<String, String> immutableMultimap, PrintWriter output) throws Exception {
-        output.println("Executing task " + getName() + ", testProperty: " + config.getTestProperty());
-        output.flush();
+    public void execute(Map<String, List<String>> map, PrintWriter printWriter) throws Exception {
+        printWriter.println("Executing task " + getName() + ", testProperty: " + config.getTestProperty());
+        printWriter.flush();
     }
 }

@@ -1,7 +1,6 @@
 package zone.dragon.dropwizard;
 
 import org.glassfish.hk2.api.ServiceLocator;
-import org.glassfish.jersey.internal.inject.Providers;
 import org.glassfish.jersey.server.monitoring.ApplicationEvent;
 import org.glassfish.jersey.server.monitoring.ApplicationEvent.Type;
 import org.glassfish.jersey.server.monitoring.ApplicationEventListener;
@@ -52,7 +51,7 @@ public abstract class ComponentActivator implements ApplicationEventListener {
         if (consumer == null) {
             throw new NullPointerException("consumer is marked non-null but is null");
         }
-        Providers.getAllServiceHandles(locator, contract).forEach(handle -> {
+        locator.getAllServiceHandles(contract).forEach(handle -> {
             String name = handle.getActiveDescriptor().getName();
             T service = handle.getService();
             if (name == null) {
