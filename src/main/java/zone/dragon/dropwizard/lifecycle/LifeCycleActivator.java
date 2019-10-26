@@ -1,7 +1,6 @@
 package zone.dragon.dropwizard.lifecycle;
 
 import io.dropwizard.lifecycle.JettyManaged;
-import lombok.NonNull;
 import org.eclipse.jetty.server.Server;
 import org.glassfish.hk2.api.ServiceLocator;
 import zone.dragon.dropwizard.ComponentActivator;
@@ -18,8 +17,11 @@ public class LifeCycleActivator extends ComponentActivator {
     private Server container;
 
     @Inject
-    public LifeCycleActivator(@NonNull ServiceLocator locator, @NonNull Server server) {
+    public LifeCycleActivator(ServiceLocator locator, Server server) {
         super(locator);
+        if (server == null) {
+            throw new NullPointerException("server is marked non-null but is null");
+        }
         container = server;
     }
 

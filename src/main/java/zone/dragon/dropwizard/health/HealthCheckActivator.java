@@ -1,9 +1,9 @@
 package zone.dragon.dropwizard.health;
 
 import com.codahale.metrics.health.HealthCheckRegistry;
-import lombok.NonNull;
-import lombok.extern.slf4j.Slf4j;
 import org.glassfish.hk2.api.ServiceLocator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import zone.dragon.dropwizard.ComponentActivator;
 
 import javax.inject.Inject;
@@ -15,13 +15,16 @@ import java.util.UUID;
  *
  * @author Bryan Harclerode
  */
-@Slf4j
 public class HealthCheckActivator extends ComponentActivator {
+    private static final Logger log = LoggerFactory.getLogger(HealthCheckActivator.class);
     private final HealthCheckRegistry registry;
 
     @Inject
-    public HealthCheckActivator(@NonNull ServiceLocator locator, @NonNull HealthCheckRegistry registry) {
+    public HealthCheckActivator(ServiceLocator locator, HealthCheckRegistry registry) {
         super(locator);
+        if (registry == null) {
+            throw new NullPointerException("registry is marked non-null but is null");
+        }
         this.registry = registry;
     }
 

@@ -6,12 +6,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.dropwizard.Configuration;
 import io.dropwizard.lifecycle.setup.LifecycleEnvironment;
 import io.dropwizard.setup.Environment;
-import lombok.NonNull;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.util.component.AbstractLifeCycle.AbstractLifeCycleListener;
 import org.eclipse.jetty.util.component.LifeCycle;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
-
 import javax.validation.Validator;
 
 /**
@@ -23,9 +21,9 @@ import javax.validation.Validator;
  * @author Bryan Harclerode
  */
 public class EnvironmentBinder<T> extends AbstractBinder {
-    private final T           configuration;
+    private final T configuration;
     private final Environment environment;
-    private       Server      server;
+    private Server server;
 
     /**
      * Creates a new binder that exposes the DropWizard environment to HK2
@@ -35,7 +33,13 @@ public class EnvironmentBinder<T> extends AbstractBinder {
      * @param environment
      *     DropWizard environment
      */
-    public EnvironmentBinder(@NonNull T configuration, @NonNull Environment environment) {
+    public EnvironmentBinder(T configuration,  Environment environment) {
+        if (configuration == null) {
+            throw new NullPointerException("configuration is marked non-null but is null");
+        }
+        if (environment == null) {
+            throw new NullPointerException("environment is marked non-null but is null");
+        }
         this.configuration = configuration;
         this.environment = environment;
         environment.lifecycle().addLifeCycleListener(new AbstractLifeCycleListener() {

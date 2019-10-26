@@ -1,8 +1,6 @@
 package zone.dragon.dropwizard.task;
 
 import io.dropwizard.setup.Environment;
-import lombok.NonNull;
-import lombok.extern.slf4j.Slf4j;
 import org.glassfish.hk2.api.ServiceLocator;
 import zone.dragon.dropwizard.ComponentActivator;
 
@@ -11,13 +9,19 @@ import javax.inject.Inject;
 /**
  * Activates and initializes all {@link io.dropwizard.servlets.tasks.Task tasks} registered with Jersey and adds them to DropWizard.
  */
-@Slf4j
 public class TaskActivator extends ComponentActivator {
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(TaskActivator.class);
     private final Environment environment;
 
     @Inject
-    public TaskActivator(@NonNull ServiceLocator locator, @NonNull Environment environment) {
+    public TaskActivator(ServiceLocator locator, Environment environment) {
         super(locator);
+        if (locator == null) {
+            throw new java.lang.NullPointerException("locator is marked non-null but is null");
+        }
+        if (environment == null) {
+            throw new java.lang.NullPointerException("environment is marked non-null but is null");
+        }
         this.environment = environment;
     }
 

@@ -1,8 +1,6 @@
 package zone.dragon.dropwizard.metrics;
 
 import com.codahale.metrics.MetricRegistry;
-import lombok.NonNull;
-import lombok.extern.slf4j.Slf4j;
 import org.glassfish.hk2.api.ServiceLocator;
 import zone.dragon.dropwizard.ComponentActivator;
 
@@ -15,13 +13,16 @@ import java.util.UUID;
  *
  * @author Bryan Harclerode
  */
-@Slf4j
 public class MetricActivator extends ComponentActivator {
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(MetricActivator.class);
     private final MetricRegistry registry;
 
     @Inject
-    public MetricActivator(@NonNull ServiceLocator locator, @NonNull MetricRegistry registry) {
+    public MetricActivator(ServiceLocator locator, MetricRegistry registry) {
         super(locator);
+        if (registry == null) {
+            throw new NullPointerException("registry is marked non-null but is null");
+        }
         this.registry = registry;
     }
 
